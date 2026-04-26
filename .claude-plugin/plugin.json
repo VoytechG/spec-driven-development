@@ -1,0 +1,19 @@
+{
+  "name": "spec-driven-development",
+  "description": "Per-area documentation set (product spec, acceptance criteria, status, decisions, feature specs, plans) so humans and agents share the same project context.",
+  "version": "0.1.0",
+  "author": {
+    "name": "VoytechG",
+    "url": "https://github.com/VoytechG"
+  },
+  "homepage": "https://github.com/VoytechG/spec-driven-development",
+  "repository": "https://github.com/VoytechG/spec-driven-development",
+  "license": "MIT",
+  "keywords": [
+    "spec-driven-development",
+    "documentation",
+    "project-context",
+    "skills",
+    "hooks"
+  ]
+}

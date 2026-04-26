@@ -1,0 +1,22 @@
+{
+  "name": "spec-driven-development",
+  "version": "0.1.0",
+  "description": "Plugin that enforces a small, standard documentation set per project area so humans and agents share the same project context.",
+  "author": {
+    "name": "VoytechG",
+    "url": "https://github.com/VoytechG"
+  },
+  "homepage": "https://github.com/VoytechG/spec-driven-development",
+  "repository": "https://github.com/VoytechG/spec-driven-development",
+  "license": "MIT",
+  "keywords": [
+    "spec-driven-development",
+    "documentation",
+    "project-context",
+    "skills",
+    "hooks",
+    "claude-code",
+    "codex",
+    "gemini"
+  ]
+}

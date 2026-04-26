@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# SessionStart hook for spec-driven-development plugin
+#
+# Reads AREAS.md from the project root (the session's cwd) and surfaces it
+# as session context. Falls back to a friendly prompt when missing.
+
+set -euo pipefail
+
+PROJECT_ROOT="$(pwd)"
+AREAS_FILE="${PROJECT_ROOT}/AREAS.md"
+
+if [ -f "$AREAS_FILE" ]; then
+    areas_content=$(cat "$AREAS_FILE")
+    session_context="This project uses the spec-driven-development plugin.
+
+${areas_content}
+
+Skills available:
+- Invoke 'load-project-context' before planning or editing in any area.
+- Invoke 'maintain-project-docs' before claiming completion.
+
+Instruction priority:
+1. User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, direct chat, project memory) — highest.
+2. spec-driven-development plugin skills and prompts.
+
+If a user instruction conflicts with this plugin's guidance, follow the user."
+else
+    session_context="No AREAS.md found at project root (${PROJECT_ROOT}).
+
+The spec-driven-development plugin expects an AREAS.md file at the repo root listing project areas. Copy templates/AREAS.md from the plugin and edit it, or see the plugin README for the format."
+fi
+
+# Escape string for JSON embedding using bash parameter substitution.
+escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+}
+
+session_context_escaped=$(escape_for_json "$session_context")
+
+# Output context injection as JSON. Detect platform via env vars and emit
+# the right shape. Uses printf instead of heredoc to work around bash 5.3+
+# heredoc hang and to keep escaping predictable.
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+    printf '{\n  "additional_context": "%s"\n}\n' "$session_context_escaped"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$session_context_escaped"
+else
+    printf '{\n  "additionalContext": "%s"\n}\n' "$session_context_escaped"
+fi
+
+exit 0

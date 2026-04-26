@@ -1,0 +1,20 @@
+{
+  "name": "spec-driven-development",
+  "description": "Marketplace listing for the spec-driven-development plugin.",
+  "owner": {
+    "name": "VoytechG",
+    "url": "https://github.com/VoytechG"
+  },
+  "plugins": [
+    {
+      "name": "spec-driven-development",
+      "description": "Per-area documentation set (product spec, acceptance criteria, status, decisions, feature specs, plans) so humans and agents share the same project context.",
+      "version": "0.1.0",
+      "source": "./",
+      "author": {
+        "name": "VoytechG",
+        "url": "https://github.com/VoytechG"
+      }
+    }
+  ]
+}

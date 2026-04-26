@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# UserPromptSubmit hook for spec-driven-development plugin
+#
+# Reads the submitted prompt (from stdin JSON or CLAUDE_USER_PROMPT env var)
+# and seeds task-list reminders when the prompt looks like substantive work.
+# Stays silent on trivial or exploratory prompts.
+
+set -euo pipefail
+
+prompt_text=""
+
+# Prefer JSON on stdin; fall back to CLAUDE_USER_PROMPT.
+# We do not need a strict JSON parser: the keyword scan below tolerates the
+# surrounding JSON envelope, since the keywords only appear inside the prompt.
+if [ ! -t 0 ]; then
+    prompt_text=$(cat || true)
+fi
+
+if [ -z "$prompt_text" ]; then
+    prompt_text="${CLAUDE_USER_PROMPT:-}"
+fi
+
+if [ -z "$prompt_text" ]; then
+    exit 0
+fi
+
+substantive_re='(implement|build|add|fix|refactor|migrate|design|spec|plan|route|endpoint|schema|migration|entity|model|component|acceptance|test|ui|workflow|behavior|architecture|decision)'
+
+if ! printf '%s' "$prompt_text" | grep -Eqi "$substantive_re"; then
+    exit 0
+fi
+
+reminder="For substantive work, seed task-list/checklist items now:
+1. Load the touched area's docs via the 'load-project-context' skill.
+2. Update the touched area's docs via the 'maintain-project-docs' skill before claiming completion."
+
+escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+}
+
+reminder_escaped=$(escape_for_json "$reminder")
+
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+    printf '{\n  "additional_context": "%s"\n}\n' "$reminder_escaped"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "UserPromptSubmit",\n    "additionalContext": "%s"\n  }\n}\n' "$reminder_escaped"
+else
+    printf '{\n  "additionalContext": "%s"\n}\n' "$reminder_escaped"
+fi
+
+exit 0
