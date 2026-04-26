@@ -1,6 +1,8 @@
 {
   "name": "spec-driven-development",
-  "description": "Marketplace listing for the spec-driven-development plugin.",
+  "metadata": {
+    "description": "Marketplace listing for the spec-driven-development plugin."
+  },
   "owner": {
     "name": "VoytechG",
     "url": "https://github.com/VoytechG"
