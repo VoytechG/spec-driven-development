@@ -1,6 +1,6 @@
 ---
 name: maintain-project-docs
-description: Use before claiming a task complete to update the touched area's implementation-status.md and decisions.md so docs and code stay in sync as a single batch.
+description: Use before claiming project-area work complete after editing, fixing, refactoring, documenting, reviewing, or updating files.
 ---
 
 # Maintain Project Docs

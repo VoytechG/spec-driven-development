@@ -16,7 +16,7 @@ The benefits, when this discipline holds:
 - **Acceptance criteria in plain English.** Every feature has a checklist a non-technical reviewer can read and verify. "Done" lives in prose, not only in test names.
 - **Concise project context for any development work.** Every change starts by loading a small, predictable set of docs scoped to the area being touched. No bloated context, no missing context.
 
-The plugin enforces the documentation shape via two skills plus hook scripts for hosts that support plugin hook events. Humans and agents read the same files. Across project areas — main app, prototype, sub-module — the shape stays identical, so context-switching feels the same as switching files within one area.
+The plugin enforces the documentation shape via a coordinator skill, two focused skills, and hook scripts for hosts that support plugin hook events. Humans and agents read the same files. Across project areas — main app, prototype, sub-module — the shape stays identical, so context-switching feels the same as switching files within one area.
 
 This plugin is **complementary to [`obra/superpowers`](https://github.com/obra/superpowers)**: superpowers gives agents *workflows* (brainstorming, TDD, debugging, planning); spec-driven-development gives them *project context*. Both can run side-by-side.
 
@@ -181,6 +181,18 @@ If `AREAS.md` is missing, the Claude-compatible `SessionStart` hook says so and 
 
 ## Skills
 
+### `using-spec-driven-development`
+
+Fires when starting, planning, editing, fixing, refactoring, documenting, reviewing, or completing project work in a repo using this plugin. Workflow:
+
+1. Decide whether the request is project work.
+2. Before planning or editing, invoke `load-project-context`.
+3. Seed a final task-list/checklist item: "Run `maintain-project-docs` before claiming completion."
+4. Before claiming completion, invoke `maintain-project-docs`.
+5. Report which docs were read and updated.
+
+This coordinator is the Codex-compatible automatic behavior. Codex does not wire this plugin's hook events, so broad native skill triggering carries the pre/post docs loop.
+
 ### `load-project-context`
 
 Fires before planning or editing. Workflow:
@@ -191,7 +203,7 @@ Fires before planning or editing. Workflow:
 4. State the areas + docs used in the response before drafting a plan or making edits.
 5. Seed a final task-list/checklist item using the host's task tool: "Run `maintain-project-docs` before claiming completion." Use `TodoWrite` in Claude Code, `update_plan` in Codex, or the local checklist mechanism in other agents.
 
-Skips for trivial non-behavior changes (typo, formatting, single-file rename, comment edit).
+Skips only for pure questions with no planned edits, explicit user opt-out, or non-project contexts.
 
 ### `maintain-project-docs`
 
@@ -231,10 +243,10 @@ If `AREAS.md` is missing, emits a friendly prompt: "No AREAS.md found at project
 
 ### `UserPromptSubmit`
 
-Emits a task-list/checklist reminder when the prompt looks like substantive work (heuristic regex match on keywords like *implement, build, fix, refactor, schema, route, design, spec*). Stays silent on trivial or exploratory prompts.
+Emits a task-list/checklist reminder when the prompt looks like project work (heuristic regex match on keywords like *implement, build, edit, update, fix, refactor, schema, route, design, spec, docs*). Stays silent on prompts that do not appear to involve project changes.
 
 ```
-For substantive work in any registered area, seed task-list/checklist items:
+For project work in any registered area, seed task-list/checklist items:
 1. Load <area> docs via load-project-context skill
 2. Update <area> docs at end via maintain-project-docs skill
 ```
@@ -243,10 +255,10 @@ For substantive work in any registered area, seed task-list/checklist items:
 
 Three target platforms, three plugin manifests, same docs and skills where the host supports skill discovery. Hook wiring is explicit per platform:
 
-| Platform     | Manifest                                                | Context file | v0.1 behavior |
+| Platform     | Manifest                                                | Context file | v0.2 behavior |
 |--------------|---------------------------------------------------------|--------------|---------------|
 | Claude Code  | `.claude-plugin/plugin.json` + `.claude-plugin/marketplace.json` | `CLAUDE.md`  | Skills plus `SessionStart` and `UserPromptSubmit` hooks through `hooks/hooks.json`. |
-| Codex        | `.codex-plugin/plugin.json` (with `interface` block)    | `AGENTS.md`  | Skills and marketplace metadata/logo; no hook events wired in the Codex manifest. |
+| Codex        | `.codex-plugin/plugin.json` (with `interface` block)    | `AGENTS.md`  | Skills, coordinator skill, marketplace metadata/logo; no hook events wired in the Codex manifest. |
 | Gemini CLI   | `gemini-extension.json`                                 | `GEMINI.md`  | Extension context plus templates/skills used directly; no hook events wired. |
 
 Hook scripts use the polyglot `hooks/run-hook.cmd` launcher pattern from `obra/superpowers` so a single extensionless script per behavior runs on both Windows and Unix. Hook output detects host env vars (`CLAUDE_PLUGIN_ROOT`, `CURSOR_PLUGIN_ROOT`, `COPILOT_CLI`) and emits the right JSON shape (`additionalContext` / `additional_context` / `hookSpecificOutput.additionalContext`) when a host wires those scripts.
@@ -291,6 +303,8 @@ spec-driven-development/
     user-prompt-submit          # extensionless hook script
 
   skills/
+    using-spec-driven-development/
+      SKILL.md
     load-project-context/
       SKILL.md
     maintain-project-docs/
@@ -334,7 +348,8 @@ Once v0.1 of this plugin ships:
 - [ ] Plugin installs in Claude Code, Codex, and Gemini CLI without errors.
 - [ ] Claude Code `SessionStart` hook reads `AREAS.md` and surfaces its content correctly.
 - [ ] Codex marketplace entry uses the fantasy-map logo and does not claim hook wiring.
-- [ ] `load-project-context` skill triggers on substantive prompts and loads the right area's docs.
+- [ ] `using-spec-driven-development` skill triggers on project-work prompts and routes through the load/update skills.
+- [ ] `load-project-context` skill triggers on project-work prompts and loads the right area's docs.
 - [ ] `maintain-project-docs` skill triggers before completion claim.
 - [ ] Project with one area passes; project with five areas passes; missing `AREAS.md` falls back gracefully.
 - [ ] gqi-portal can adopt the plugin and replace the in-repo version end-to-end.

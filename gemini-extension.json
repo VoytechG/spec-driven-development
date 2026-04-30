@@ -1,6 +1,6 @@
 {
   "name": "spec-driven-development",
   "description": "Per-area documentation set so a fresh session loads the same project context every time.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "contextFileName": "GEMINI.md"
 }

@@ -1,11 +1,11 @@
 ---
 name: load-project-context
-description: Use before planning or editing in any project area to load that area's docs (product spec, acceptance criteria, status, decisions) so the work starts with the right context.
+description: Use before planning, editing, fixing, refactoring, documenting, reviewing, or completing work in any project area that uses spec-driven-development.
 ---
 
 # Load Project Context
 
-Load the right area's documentation before drafting plans or making edits. Skip only for trivial non-behavior changes (typo, comment edit, formatting, single-file rename).
+Load the right area's documentation before drafting plans, making edits, or claiming completion. Apply this to all project work, including small changes.
 
 ## Workflow
 
@@ -24,7 +24,7 @@ Load the right area's documentation before drafting plans or making edits. Skip 
 
 ## When to skip
 
-Skip the workflow only for changes that cannot affect behavior, schema, or decisions: typo fixes, comment edits, formatting-only changes, single-file renames. Anything that ships, fixes, or alters behavior runs the full workflow.
+Skip the workflow only when the user asks a pure question with no planned edits, explicitly asks to skip the plugin, or the current directory is not a project repository.
 
 ## If `AREAS.md` is missing
 

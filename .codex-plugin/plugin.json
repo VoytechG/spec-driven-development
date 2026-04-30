@@ -1,6 +1,6 @@
 {
   "name": "spec-driven-development",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Per-area documentation set (product spec, acceptance criteria, status, decisions, feature specs, plans) so humans and agents share the same project context.",
   "author": {
     "name": "VoytechG",
@@ -20,16 +20,18 @@
   "interface": {
     "displayName": "Spec-Driven Development",
     "shortDescription": "Per-area docs (spec, acceptance, status, decisions) shared by humans and agents.",
-    "longDescription": "Use spec-driven-development to keep every project area (main app, prototype, sub-module) carrying the same small documentation set. Skills guide agents to load the right area's context before edits and keep implementation status and decisions in sync before completion. Claude-compatible hook scripts ship with the plugin for hosts that support those events.",
+    "longDescription": "Use spec-driven-development to keep every project area (main app, prototype, sub-module) carrying the same small documentation set. A coordinator skill gives Codex a broad project-work trigger, then routes agents to load the right area's context before edits and keep implementation status and decisions in sync before completion. Claude-compatible hook scripts ship with the plugin for hosts that support those events.",
     "developerName": "VoytechG",
     "category": "Coding",
     "capabilities": [
+      "Interactive",
       "Read",
       "Write"
     ],
     "defaultPrompt": [
       "Help me set up spec-driven docs for this project.",
-      "Add a new area to AREAS.md and scaffold its docs."
+      "Add a new area to AREAS.md and scaffold its docs.",
+      "Make a small project change while keeping the area docs in sync."
     ],
     "brandColor": "#B7791F",
     "logo": "./assets/icon-fantasy-map.png",

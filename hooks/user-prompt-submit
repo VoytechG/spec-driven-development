@@ -2,8 +2,8 @@
 # UserPromptSubmit hook for spec-driven-development plugin
 #
 # Reads the submitted prompt (from stdin JSON or CLAUDE_USER_PROMPT env var)
-# and seeds task-list reminders when the prompt looks like substantive work.
-# Stays silent on trivial or exploratory prompts.
+# and seeds task-list reminders when the prompt looks like project work.
+# Stays silent on prompts that do not appear to involve project changes.
 
 set -euo pipefail
 
@@ -24,13 +24,13 @@ if [ -z "$prompt_text" ]; then
     exit 0
 fi
 
-substantive_re='(implement|build|add|fix|refactor|migrate|design|spec|plan|route|endpoint|schema|migration|entity|model|component|acceptance|test|ui|workflow|behavior|architecture|decision)'
+project_work_re='(implement|build|add|edit|change|update|remove|delete|rename|move|fix|refactor|migrate|design|spec|plan|route|endpoint|schema|migration|entity|model|component|acceptance|test|ui|ux|workflow|behavior|architecture|decision|doc|docs|config|cleanup)'
 
-if ! printf '%s' "$prompt_text" | grep -Eqi "$substantive_re"; then
+if ! printf '%s' "$prompt_text" | grep -Eqi "$project_work_re"; then
     exit 0
 fi
 
-reminder="For substantive work, seed task-list/checklist items now:
+reminder="For project work, seed task-list/checklist items now:
 1. Load the touched area's docs via the 'load-project-context' skill.
 2. Update the touched area's docs via the 'maintain-project-docs' skill before claiming completion."
 
