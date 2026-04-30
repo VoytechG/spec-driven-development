@@ -8,6 +8,7 @@ Codex auto-coordination release.
 - Updated `load-project-context` and `maintain-project-docs` so small project changes are covered by the same docs loop.
 - Reworded hook reminders to "project work" and broadened the prompt heuristic.
 - Marked the Codex plugin interface as interactive because missing `AREAS.md` setup can require confirmation.
+- Added a Codex-native marketplace catalog at `.agents/plugins/marketplace.json`.
 
 ## v0.1.0 (2026-04-26)
 

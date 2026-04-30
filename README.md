@@ -32,10 +32,10 @@ The plugin is complementary to workflow plugins like [`obra/superpowers`](https:
 In the Codex CLI:
 
 ```bash
-/plugins
+codex plugin marketplace add VoytechG/spec-driven-development --ref v0.2.0
 ```
 
-Search for `spec-driven-development` and install.
+Then restart Codex, open `/plugins`, choose the `Spec-Driven Development` marketplace, and install `spec-driven-development`.
 
 ### Gemini CLI
 
