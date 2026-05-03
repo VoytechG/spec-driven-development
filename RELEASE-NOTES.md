@@ -1,5 +1,11 @@
 # Release Notes
 
+## v0.3.1 (2026-05-03)
+
+Codex commit guard release.
+
+- Extended the `Stop` hook to check the most recent commit when the worktree is clean, so code-only commits made during a session still trigger the docs-maintenance guard.
+
 ## v0.3.0 (2026-05-03)
 
 Codex lifecycle hook release.

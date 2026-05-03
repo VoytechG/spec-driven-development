@@ -27,19 +27,14 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     exit 0
 fi
 
-status_output=$(git status --porcelain --untracked-files=all 2>/dev/null || true)
-if [ -z "$status_output" ]; then
-    exit 0
-fi
-
 has_project_change=0
 has_doc_change=0
+change_source="worktree"
 
-while IFS= read -r line; do
-    path="${line#???}"
-
+scan_path() {
+    local path="$1"
     if [ -z "$path" ]; then
-        continue
+        return
     fi
 
     case "$path" in
@@ -55,13 +50,34 @@ while IFS= read -r line; do
             has_project_change=1
             ;;
     esac
-done < <(printf '%s\n' "$status_output")
+}
+
+status_output=$(git status --porcelain --untracked-files=all 2>/dev/null || true)
+
+if [ -n "$status_output" ]; then
+    while IFS= read -r line; do
+        scan_path "${line#???}"
+    done < <(printf '%s\n' "$status_output")
+else
+    recent_seconds="${SPEC_DRIVEN_STOP_RECENT_COMMIT_SECONDS:-7200}"
+    if git rev-parse --verify HEAD >/dev/null 2>&1; then
+        commit_time=$(git log -1 --format=%ct 2>/dev/null || printf '0')
+        now_time=$(date +%s)
+        if [ "$commit_time" -gt 0 ] && [ $((now_time - commit_time)) -le "$recent_seconds" ]; then
+            change_source="recent last commit"
+            committed_paths=$(git diff-tree --no-commit-id --name-only -r HEAD 2>/dev/null || true)
+            while IFS= read -r path; do
+                scan_path "$path"
+            done < <(printf '%s\n' "$committed_paths")
+        fi
+    fi
+fi
 
 if [ "$has_project_change" -eq 0 ] || [ "$has_doc_change" -eq 1 ]; then
     exit 0
 fi
 
-message="spec-driven-development: changed project files are present, but no documentation files changed. Before finishing, use maintain-project-docs for the touched AREAS.md areas, update implementation-status.md or decisions.md when needed, or explain why docs do not change."
+message="spec-driven-development: changed project files are present in the ${change_source}, but no documentation files changed. Before finishing, use maintain-project-docs for the touched AREAS.md areas, update implementation-status.md or decisions.md when needed, or explain why docs do not change."
 
 escape_for_json() {
     local s="$1"

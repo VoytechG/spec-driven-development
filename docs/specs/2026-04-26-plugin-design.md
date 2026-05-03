@@ -253,7 +253,7 @@ For project work in any registered area, seed task-list/checklist items:
 
 ### `Stop`
 
-When `AREAS.md` exists and the git worktree has changed non-doc project files but no changed documentation files, blocks final completion with a reminder to run `maintain-project-docs` or explain why docs do not change. The hook exits silently when it sees `stop_hook_active` to avoid loops.
+When `AREAS.md` exists and the git worktree has changed non-doc project files but no changed documentation files, blocks final completion with a reminder to run `maintain-project-docs` or explain why docs do not change. If the worktree is clean, it also checks the most recent commit when it is fresh so code-only commits made during the session are still guarded. The hook exits silently when it sees `stop_hook_active` to avoid loops.
 
 ## Cross-platform support
 

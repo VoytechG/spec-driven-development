@@ -1,6 +1,6 @@
 {
   "name": "spec-driven-development",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Per-area documentation set (product spec, acceptance criteria, status, decisions, feature specs, plans) so humans and agents share the same project context.",
   "author": {
     "name": "VoytechG",
