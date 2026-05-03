@@ -16,7 +16,7 @@ The benefits, when this discipline holds:
 - **Acceptance criteria in plain English.** Every feature has a checklist a non-technical reviewer can read and verify. "Done" lives in prose, not only in test names.
 - **Concise project context for any development work.** Every change starts by loading a small, predictable set of docs scoped to the area being touched. No bloated context, no missing context.
 
-The plugin enforces the documentation shape via a coordinator skill, two focused skills, and hook scripts for hosts that support plugin hook events. Humans and agents read the same files. Across project areas — main app, prototype, sub-module — the shape stays identical, so context-switching feels the same as switching files within one area.
+The plugin enforces the documentation shape via a coordinator skill, two focused skills, and lifecycle hook scripts. Humans and agents read the same files. Across project areas — main app, prototype, sub-module — the shape stays identical, so context-switching feels the same as switching files within one area.
 
 This plugin is **complementary to [`obra/superpowers`](https://github.com/obra/superpowers)**: superpowers gives agents *workflows* (brainstorming, TDD, debugging, planning); spec-driven-development gives them *project context*. Both can run side-by-side.
 
@@ -177,7 +177,7 @@ Off-the-shelf alternative — evaluating Directus as the main app's admin founda
 
 That is the entire config surface. No JSON, no schema. Skills read `AREAS.md` directly; hook-capable hosts can also surface its content as session context. Project-specific concepts (integration intent, status, ownership) live as prose in each area's section. Adding a new area is one new `## ` heading.
 
-If `AREAS.md` is missing, the Claude-compatible `SessionStart` hook says so and points at the project's docs.
+If `AREAS.md` is missing, the `SessionStart` hook says so and points at the project's docs.
 
 ## Skills
 
@@ -191,7 +191,7 @@ Fires when starting, planning, editing, fixing, refactoring, documenting, review
 4. Before claiming completion, invoke `maintain-project-docs`.
 5. Report which docs were read and updated.
 
-This coordinator is the Codex-compatible automatic behavior. Codex does not wire this plugin's hook events, so broad native skill triggering carries the pre/post docs loop.
+This coordinator gives Codex and other skill-aware hosts a broad project-work trigger. Lifecycle hooks add session context and guardrails, but the coordinator remains the primary route into the focused load/update skills.
 
 ### `load-project-context`
 
@@ -251,17 +251,21 @@ For project work in any registered area, seed task-list/checklist items:
 2. Update <area> docs at end via maintain-project-docs skill
 ```
 
+### `Stop`
+
+When `AREAS.md` exists and the git worktree has changed non-doc project files but no changed documentation files, blocks final completion with a reminder to run `maintain-project-docs` or explain why docs do not change. The hook exits silently when it sees `stop_hook_active` to avoid loops.
+
 ## Cross-platform support
 
 Three target platforms, three plugin manifests, same docs and skills where the host supports skill discovery. Hook wiring is explicit per platform:
 
-| Platform     | Manifest                                                | Context file | v0.2 behavior |
+| Platform     | Manifest                                                | Context file | v0.3 behavior |
 |--------------|---------------------------------------------------------|--------------|---------------|
-| Claude Code  | `.claude-plugin/plugin.json` + `.claude-plugin/marketplace.json` | `CLAUDE.md`  | Skills plus `SessionStart` and `UserPromptSubmit` hooks through `hooks/hooks.json`. |
-| Codex        | `.codex-plugin/plugin.json` (with `interface` block)    | `AGENTS.md`  | Skills, coordinator skill, marketplace metadata/logo; no hook events wired in the Codex manifest. |
+| Claude Code  | `.claude-plugin/plugin.json` + `.claude-plugin/marketplace.json` | `CLAUDE.md`  | Skills plus `SessionStart`, `UserPromptSubmit`, and `Stop` hooks through `hooks/hooks.json`. |
+| Codex        | `.codex-plugin/plugin.json` (with `interface` block)    | `AGENTS.md`  | Skills, coordinator skill, marketplace metadata/logo, and explicit lifecycle hook wiring through `./hooks/hooks.json`. |
 | Gemini CLI   | `gemini-extension.json`                                 | `GEMINI.md`  | Extension context plus templates/skills used directly; no hook events wired. |
 
-Hook scripts use the polyglot `hooks/run-hook.cmd` launcher pattern from `obra/superpowers` so a single extensionless script per behavior runs on both Windows and Unix. Hook output detects host env vars (`CLAUDE_PLUGIN_ROOT`, `CURSOR_PLUGIN_ROOT`, `COPILOT_CLI`) and emits the right JSON shape (`additionalContext` / `additional_context` / `hookSpecificOutput.additionalContext`) when a host wires those scripts.
+Hook scripts use the polyglot `hooks/run-hook.cmd` launcher pattern from `obra/superpowers` so a single extensionless script per behavior runs on both Windows and Unix. `SessionStart` and `UserPromptSubmit` emit `hookSpecificOutput.additionalContext` by default for Claude Code and Codex, `additional_context` for Cursor, and top-level `additionalContext` for Copilot. `Stop` emits Codex/Claude-style stop JSON only when it needs to block completion.
 
 ## Templates shipped with the plugin
 
@@ -301,6 +305,7 @@ spec-driven-development/
     run-hook.cmd                # polyglot Win/Unix launcher (from superpowers)
     session-start               # extensionless hook script
     user-prompt-submit          # extensionless hook script
+    stop                        # extensionless hook script
 
   skills/
     using-spec-driven-development/
@@ -343,11 +348,13 @@ Once v0.1 of this plugin ships:
 2. **Codex sync.** Superpowers maintains a `sync-to-codex-plugin.sh` script that mirrors itself into `prime-radiant-inc/openai-codex-plugins`. Defer for v0.1; add later if Codex marketplace adoption requires it.
 3. **Path-aware hook output.** Currently the hook is static (lists all areas always). Could become path-aware in v0.2. Defer.
 
-## Acceptance criteria for v0.1
+## Acceptance criteria
 
 - [ ] Plugin installs in Claude Code, Codex, and Gemini CLI without errors.
-- [ ] Claude Code `SessionStart` hook reads `AREAS.md` and surfaces its content correctly.
-- [ ] Codex marketplace entry uses the fantasy-map logo and does not claim hook wiring.
+- [ ] Claude Code and Codex `SessionStart` hooks read `AREAS.md` and surface its content correctly.
+- [ ] Claude Code and Codex `UserPromptSubmit` hooks seed project-work reminders.
+- [ ] Claude Code and Codex `Stop` hooks block completion when project files changed but docs did not.
+- [ ] Codex marketplace entry uses the fantasy-map logo and declares lifecycle hook wiring.
 - [ ] `using-spec-driven-development` skill triggers on project-work prompts and routes through the load/update skills.
 - [ ] `load-project-context` skill triggers on project-work prompts and loads the right area's docs.
 - [ ] `maintain-project-docs` skill triggers before completion claim.

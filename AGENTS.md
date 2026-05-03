@@ -9,7 +9,7 @@ The plugin is generic. It must contain no references to specific projects, produ
 ## What the plugin ships
 
 - Three skills: `using-spec-driven-development`, `load-project-context`, and `maintain-project-docs`.
-- Two hooks: `SessionStart` and `UserPromptSubmit`.
+- Three hooks: `SessionStart`, `UserPromptSubmit`, and `Stop`.
 - Eight markdown templates under `templates/`.
 - Three platform manifests: Claude Code, Codex, Gemini CLI.
 - One marketplace logo under `assets/`.
@@ -31,7 +31,7 @@ Every change should leave this list intact unless the change deliberately adds o
 
 ## Local checks
 
-- `bash -n hooks/session-start` and `bash -n hooks/user-prompt-submit` must pass.
+- `bash -n hooks/session-start`, `bash -n hooks/user-prompt-submit`, and `bash -n hooks/stop` must pass.
 - JSON manifests must parse.
 
 ## What does not belong here

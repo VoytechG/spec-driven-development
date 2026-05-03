@@ -1,5 +1,15 @@
 # Release Notes
 
+## v0.3.0 (2026-05-03)
+
+Codex lifecycle hook release.
+
+- Added explicit Codex hook wiring through `.codex-plugin/plugin.json`.
+- Changed hook JSON output so Codex and Claude receive `hookSpecificOutput.additionalContext` by default.
+- Added a conservative `Stop` hook that blocks completion when project files changed but docs did not.
+- Updated README and design notes to reflect current Codex hook support.
+- Updated the Codex marketplace catalog to point at `v0.3.0`.
+
 ## v0.2.0 (2026-04-29)
 
 Codex auto-coordination release.

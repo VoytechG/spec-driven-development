@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Stop hook for spec-driven-development plugin.
+#
+# When a project uses AREAS.md, changed non-doc project files should be
+# reconciled through maintain-project-docs before an agent claims completion.
+
+set -euo pipefail
+
+hook_input=""
+if [ ! -t 0 ]; then
+    hook_input=$(cat || true)
+fi
+
+if printf '%s' "$hook_input" | grep -Eq '"stop_hook_active"[[:space:]]*:[[:space:]]*true'; then
+    exit 0
+fi
+
+if [ "${SPEC_DRIVEN_DISABLE_STOP_HOOK:-}" = "1" ]; then
+    exit 0
+fi
+
+if [ ! -f AREAS.md ]; then
+    exit 0
+fi
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    exit 0
+fi
+
+status_output=$(git status --porcelain --untracked-files=all 2>/dev/null || true)
+if [ -z "$status_output" ]; then
+    exit 0
+fi
+
+has_project_change=0
+has_doc_change=0
+
+while IFS= read -r line; do
+    path="${line#???}"
+
+    if [ -z "$path" ]; then
+        continue
+    fi
+
+    case "$path" in
+        AREAS.md|docs/*|*/docs/*|*.md)
+            has_doc_change=1
+            ;;
+    esac
+
+    case "$path" in
+        AREAS.md|docs/*|*/docs/*|*.md)
+            ;;
+        *)
+            has_project_change=1
+            ;;
+    esac
+done < <(printf '%s\n' "$status_output")
+
+if [ "$has_project_change" -eq 0 ] || [ "$has_doc_change" -eq 1 ]; then
+    exit 0
+fi
+
+message="spec-driven-development: changed project files are present, but no documentation files changed. Before finishing, use maintain-project-docs for the touched AREAS.md areas, update implementation-status.md or decisions.md when needed, or explain why docs do not change."
+
+escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+}
+
+message_escaped=$(escape_for_json "$message")
+
+printf '{\n  "decision": "block",\n  "reason": "%s"\n}\n' "$message_escaped"
+
+exit 0

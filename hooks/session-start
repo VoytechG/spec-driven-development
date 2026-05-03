@@ -43,15 +43,16 @@ escape_for_json() {
 
 session_context_escaped=$(escape_for_json "$session_context")
 
-# Output context injection as JSON. Detect platform via env vars and emit
-# the right shape. Uses printf instead of heredoc to work around bash 5.3+
-# heredoc hang and to keep escaping predictable.
+# Output context injection as JSON. Cursor expects `additional_context`;
+# Copilot keeps the older top-level `additionalContext`; Claude Code and
+# Codex both accept `hookSpecificOutput.additionalContext`.
+# Uses printf instead of heredoc to keep escaping predictable.
 if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
     printf '{\n  "additional_context": "%s"\n}\n' "$session_context_escaped"
-elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
-    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$session_context_escaped"
-else
+elif [ -n "${COPILOT_CLI:-}" ]; then
     printf '{\n  "additionalContext": "%s"\n}\n' "$session_context_escaped"
+else
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$session_context_escaped"
 fi
 
 exit 0

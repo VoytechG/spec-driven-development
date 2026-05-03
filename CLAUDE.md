@@ -8,7 +8,7 @@ Claude Code reads `.claude-plugin/plugin.json` and the marketplace listing in `.
 
 ## Hook output shape
 
-The `hooks/session-start` script emits Claude's `hookSpecificOutput.additionalContext` shape when `CLAUDE_PLUGIN_ROOT` is set and `COPILOT_CLI` is not. Do not change the shape without testing on Claude Code; Claude reads both `additional_context` and `hookSpecificOutput` and would double-inject.
+The `hooks/session-start` and `hooks/user-prompt-submit` scripts emit Claude/Codex `hookSpecificOutput.additionalContext` by default, Cursor `additional_context` when `CURSOR_PLUGIN_ROOT` is set, and Copilot's older top-level `additionalContext` when `COPILOT_CLI` is set. Do not emit multiple shapes from one hook; hosts can double-inject.
 
 ## Skill discovery
 
