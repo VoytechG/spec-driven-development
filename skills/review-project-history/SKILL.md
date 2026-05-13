@@ -18,7 +18,6 @@ work should use `load-project-context` instead.
    - the active `spec.md`, `product-spec.md`, or named feature spec, if present
 3. **Search history before reading it.** Build a candidate list from history paths that actually exist, then run targeted search over that list. Likely paths include:
    - `<docsRoot>/decisions/`
-   - `<docsRoot>/decisions.md`
    - `<docsRoot>/logs/`
    - `<docsRoot>/archive/`
    - `<docsRoot>/plans/`

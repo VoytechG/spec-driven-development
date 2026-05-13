@@ -33,7 +33,8 @@ fi
 reminder="For project work, seed task-list/checklist items now:
 1. Load the touched area's active docs via the 'load-project-context' skill.
 2. Use 'review-project-history' only for onboarding or old decision/log/archive research.
-3. Update the touched area's docs via the 'maintain-project-docs' skill before claiming completion. For pure refactors or equivalent no-doc changes, include 'Docs unchanged by design: <reason>' in the final response."
+3. Use 'update-docs-structure' for migrations to the latest docs layout.
+4. Update the touched area's docs via the 'maintain-project-docs' skill before claiming completion. For pure refactors or equivalent no-doc changes, include 'Docs unchanged by design: <reason>' in the final response."
 
 escape_for_json() {
     local s="$1"

@@ -18,7 +18,7 @@ created or linked only when they add durable retrieval value.
 5. **Update `operations.md` only for operational behavior.** Examples: commands, environment variables, paid-call gates, deploy/import/export steps, retry paths, and stop conditions.
 6. **Add durable decisions without loading full history.**
    - Prefer creating a new file under `decisions/YYYY-MM-DD-short-title.md` using the decision-record template.
-   - Update `decisions/README.md` or `decisions.md` only as a short index, if the area has one.
+   - Update `decisions/README.md` only as a short index, if the area has one.
    - Do not append long chronological entries to an active working doc.
 7. **Update `README.md`** when the reading order, area focus, active spec pointer, or docs layout changed.
 8. **Use the no-doc-change escape hatch only when appropriate.** If code changed but the area contract, current state, operations, acceptance checks, and decisions did not change, do not make a noisy docs edit. Instead, include `Docs unchanged by design: <reason>` in the final response.

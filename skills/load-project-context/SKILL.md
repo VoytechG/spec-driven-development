@@ -21,7 +21,7 @@ them only when the task asks for history or clearly revisits a previous choice.
    - `acceptance-criteria.md` — only when the area keeps criteria separate from the spec and the task changes or verifies those criteria.
    - `plans/<date>-<batch>.md` — only when continuing or modifying that in-flight batch.
 5. **Avoid history by default.**
-   - Do not read `decisions/`, `decisions.md`, `logs/`, `archive/`, or old plans during normal coding unless the README/status points to a specific current record or the task asks why something was chosen.
+   - Do not read `decisions/`, `logs/`, `archive/`, or old plans during normal coding unless the README/status points to a specific current record or the task asks why something was chosen.
    - If you suspect a previous decision matters, use targeted search first. Search only history paths that exist, e.g. build a short candidate list from `<docsRoot>/decisions`, `<docsRoot>/logs`, and `<docsRoot>/archive`, then run `rg -n "<topic>" ...` and read only the matching file.
    - For onboarding, broad history review, or "did we already decide this?", use `review-project-history` instead of loading history into working context.
 6. **State which areas and docs you used.** Before drafting a plan or making edits, list them in your response so the human partner can confirm coverage.

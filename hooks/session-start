@@ -19,6 +19,7 @@ Skills available:
 - Invoke 'load-project-context' before planning or editing in any area.
 - Invoke 'maintain-project-docs' before claiming completion.
 - Invoke 'review-project-history' for onboarding, old decisions, logs, archives, or why-this-was-chosen research.
+- Invoke 'update-docs-structure' when migrating older area docs to the latest plugin structure.
 
 Instruction priority:
 1. User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, direct chat, project memory) — highest.

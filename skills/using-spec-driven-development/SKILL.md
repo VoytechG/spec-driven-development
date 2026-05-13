@@ -15,8 +15,9 @@ retrieval material, not default coding context.
 3. Before planning or editing, use `load-project-context`. If `AREAS.md` is missing, stop and ask whether to scaffold it from `templates/AREAS.md`, unless the user only asked for inspection.
 4. Add a final checklist item: "Run `maintain-project-docs` before claiming completion." Use `update_plan` in Codex, `TodoWrite` in Claude Code, or the local checklist mechanism in other agents.
 5. Use `review-project-history` instead of `load-project-context` when the user asks to onboard, research prior choices, or review old decisions/plans/logs.
-6. Before claiming completion, use `maintain-project-docs` for every touched area.
-7. In the final reply, name the area docs read and updated, or explain why no docs changed.
+6. Use `update-docs-structure` when the user asks to migrate older docs to the latest plugin structure.
+7. Before claiming completion, use `maintain-project-docs` for every touched area.
+8. In the final reply, name the area docs read and updated, or explain why no docs changed.
 
 ## Priority
 

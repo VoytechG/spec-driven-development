@@ -8,7 +8,7 @@ The plugin is generic. It must contain no references to specific projects, produ
 
 ## What the plugin ships
 
-- Four skills: `using-spec-driven-development`, `load-project-context`, `maintain-project-docs`, and `review-project-history`.
+- Five skills: `using-spec-driven-development`, `load-project-context`, `maintain-project-docs`, `review-project-history`, and `update-docs-structure`.
 - Three hooks: `SessionStart`, `UserPromptSubmit`, and `Stop`.
 - Markdown templates under `templates/`.
 - Three platform manifests: Claude Code, Codex, Gemini CLI.

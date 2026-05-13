@@ -16,7 +16,7 @@ For each project area (the main app, a prototype, a sub-module), the plugin expe
 Historical context is separate:
 
 - `decisions/YYYY-MM-DD-short-title.md` — one durable choice per file.
-- `decisions/README.md` or `decisions.md` — optional short index, not a long chronological log.
+- `decisions/README.md` — optional short index, not a long chronological log.
 - `logs/` and `archive/` — verification history, run history, old plans, and evidence.
 
 A repo-root `AREAS.md` file lists the areas. Skills load the right area's docs before edits and update them before completion. On Codex, the `using-spec-driven-development` coordinator skill gives the plugin a broad project-work trigger and routes agents through the focused load/update skills. Lifecycle hooks also surface `AREAS.md`, seed task-list reminders, and guard completion when project files changed without docs.
@@ -70,6 +70,7 @@ Hook scripts use the same portable `run-hook.cmd` pattern as Superpowers, so oth
 - `skills/load-project-context/` — fires before planning, editing, or completion review; reads `AREAS.md` and compact active docs only.
 - `skills/maintain-project-docs/` — fires before completion; updates active docs and creates small decision records when needed.
 - `skills/review-project-history/` — retrieves decisions, logs, archives, and old plans for onboarding or targeted history research.
+- `skills/update-docs-structure/` — migrates and prunes older area docs to the compact active-docs plus historical-retrieval structure.
 - `hooks/session-start` — surfaces `AREAS.md` at session start on hook-capable hosts; falls back to a friendly prompt if missing.
 - `hooks/user-prompt-submit` — seeds task-list reminders on hook-capable hosts when the prompt looks like project work.
 - `hooks/stop` — blocks final completion when changed project files are present but docs did not change.

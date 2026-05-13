@@ -11,9 +11,10 @@ The original v0.1 design below treated a fixed seven-file docs package as the de
 - Normal coding uses compact active docs only: `README.md`, `implementation-status.md`, and the active `spec.md` / `product-spec.md` or named feature spec.
 - `acceptance-criteria.md` is optional. Small areas should keep acceptance checks inside the active spec.
 - `operations.md` is optional and only for runbooks: commands, environment variables, deploy/import/export steps, retries, paid-call gates, and stop conditions.
-- Durable decisions should live as atomic `decisions/YYYY-MM-DD-short-title.md` records. A top-level `decisions.md` or `decisions/README.md` is only a short index.
+- Durable decisions should live as atomic `decisions/YYYY-MM-DD-short-title.md` records with a short `decisions/README.md` index. Old top-level `decisions.md` files should be removed during structure migration unless a project explicitly asks for compatibility shims.
 - Old decisions, verification logs, run history, and shipped plans are historical context. They are not loaded during normal coding.
 - `review-project-history` is the dedicated skill for onboarding, "why did we choose this?", and targeted old-plan/log/decision research.
+- `update-docs-structure` is the dedicated skill for migrating older docs packages into the current compact active-docs plus historical-retrieval layout.
 - The Stop hook still blocks code-only completions with no docs, but accepts an explicit final-response escape hatch: `Docs unchanged by design: <reason>`.
 
 Read the rest of this file as original design history. The current operational contract is in `README.md`, the skill files, templates, and release notes.
@@ -30,7 +31,7 @@ The benefits, when this discipline holds:
 - **Acceptance criteria in plain English.** Every feature has checks a non-technical reviewer can read and verify. "Done" lives in prose, not only in test names.
 - **Concise project context for any development work.** Every change starts by loading a small, predictable set of active docs scoped to the area being touched. No bloated context, no missing context.
 
-The plugin enforces the documentation shape via a coordinator skill, three focused skills, and lifecycle hook scripts. Humans and agents read the same files. Across project areas — main app, prototype, sub-module — the shape stays identical, so context-switching feels the same as switching files within one area.
+The plugin enforces the documentation shape via a coordinator skill, four focused skills, and lifecycle hook scripts. Humans and agents read the same files. Across project areas — main app, prototype, sub-module — the shape stays identical, so context-switching feels the same as switching files within one area.
 
 This plugin is **complementary to [`obra/superpowers`](https://github.com/obra/superpowers)**: superpowers gives agents *workflows* (brainstorming, TDD, debugging, planning); spec-driven-development gives them *project context*. Both can run side-by-side.
 
@@ -113,7 +114,7 @@ Status: Active | Superseded | Reversed
 ...
 ```
 
-A top-level `decisions.md` or `decisions/README.md` may exist as a short index. Normal coding should not read the full decision history; use `review-project-history` for targeted retrieval.
+`decisions/README.md` may exist as a short index. Normal coding should not read the full decision history; use `review-project-history` for targeted retrieval.
 
 ### `specs/` — feature designs
 
@@ -246,6 +247,17 @@ Fires for onboarding, "why did we choose this?", "did we already decide this?", 
 4. Read only relevant decision records, old plans, logs, or archive files.
 5. Summarize settled decisions, rejected alternatives, stale material, unresolved questions, and next files to read.
 
+### `update-docs-structure`
+
+Fires when migrating an existing docs package to the latest plugin structure. Workflow:
+
+1. Read `AREAS.md` and identify the target area.
+2. Inventory docs with file lists, line counts, and heading scans before reading large files.
+3. Classify docs as active, operations, decisions, or history.
+4. Propose a migration map before large rewrites.
+5. Keep active docs compact, preserve historical material, split long decisions into records when practical, and prune old-format files after updating in-repo references.
+6. Verify with `git diff --check` and a post-migration inventory.
+
 ## Hooks
 
 ### `SessionStart`
@@ -262,6 +274,7 @@ Skills available:
 - Invoke `load-project-context` before planning or editing in any area.
 - Invoke `maintain-project-docs` before claiming completion.
 - Invoke `review-project-history` for onboarding, old decisions, logs, archives, or why-this-was-chosen research.
+- Invoke `update-docs-structure` when migrating older area docs to the latest plugin structure.
 
 Instruction priority:
 1. User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, direct chat, project memory) — highest.
@@ -282,7 +295,8 @@ Emits a task-list/checklist reminder when the prompt looks like project work (he
 For project work in any registered area, seed task-list/checklist items:
 1. Load <area> active docs via load-project-context skill
 2. Use review-project-history only for onboarding or old decision/log/archive research
-3. Update <area> docs at end via maintain-project-docs skill
+3. Use update-docs-structure for migrations to the latest docs layout
+4. Update <area> docs at end via maintain-project-docs skill
 ```
 
 ### `Stop`
@@ -312,7 +326,7 @@ Hook scripts use the polyglot `hooks/run-hook.cmd` launcher pattern from `obra/s
 - `acceptance-criteria.md` — optional acceptance criteria.
 - `implementation-status.md` — starter status doc.
 - `operations.md` — optional operations runbook.
-- `decisions.md` — optional short decision index.
+- `decisions-readme.md` — optional short decision index, copied to `decisions/README.md`.
 - `decision-record.md` — atomic decision record.
 - `feature-spec.md` — starter spec for `specs/`.
 - `implementation-plan.md` — starter plan for `plans/`.
@@ -353,6 +367,8 @@ spec-driven-development/
       SKILL.md
     review-project-history/
       SKILL.md
+    update-docs-structure/
+      SKILL.md
 
   templates/
     AREAS.md
@@ -362,7 +378,7 @@ spec-driven-development/
     acceptance-criteria.md
     implementation-status.md
     operations.md
-    decisions.md
+    decisions-readme.md
     decision-record.md
     feature-spec.md
     implementation-plan.md
@@ -401,6 +417,7 @@ This was the v0.1 adoption plan and is retained as history, not current installa
 - [ ] `load-project-context` skill triggers on project-work prompts and loads the right area's active docs without history by default.
 - [ ] `maintain-project-docs` skill triggers before completion claim.
 - [ ] `review-project-history` skill is available and uses targeted search for old decisions, logs, archives, and shipped plans.
+- [ ] `update-docs-structure` skill is available and migrates old docs packages through inventory, classification, pruning of replaced old-format files, and verification.
 - [ ] `Stop` hook accepts `Docs unchanged by design: <reason>` for pure refactors or equivalent no-doc-change completions.
 - [ ] Project with one area passes; project with five areas passes; missing `AREAS.md` falls back gracefully.
 - [ ] gqi-portal can adopt the plugin and replace the in-repo version end-to-end.

@@ -1,5 +1,10 @@
 # Release Notes
 
+## Unreleased
+
+- Added `update-docs-structure` for migrating and pruning existing area docs to the current compact active-docs plus historical-retrieval structure.
+- Replaced the old top-level `decisions.md` template with `decisions-readme.md`, intended to be copied to `decisions/README.md`.
+
 ## v0.4.0 (2026-05-13)
 
 Context discipline release.
