@@ -11,7 +11,7 @@
     {
       "name": "spec-driven-development",
       "description": "Per-area active docs plus deliberate history review so humans and agents share useful project context without loading every archive.",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "source": "./",
       "author": {
         "name": "VoytechG",

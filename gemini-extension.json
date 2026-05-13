@@ -1,6 +1,6 @@
 {
   "name": "spec-driven-development",
   "description": "Per-area active docs plus deliberate history review so fresh sessions load useful context.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "contextFileName": "GEMINI.md"
 }
