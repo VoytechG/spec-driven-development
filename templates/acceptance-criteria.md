@@ -1,6 +1,6 @@
 # Acceptance Criteria — <Area Name>
 
-*Plain-English checklist of "done". Each item is concrete enough to verify manually or by test, readable by a non-technical reviewer.*
+*Optional. Use this only when acceptance checks are large, cross-release, or maintained by people who do not edit the spec. Otherwise keep checks in the active spec.*
 
 ## Open
 

@@ -5,22 +5,27 @@ description: Use before planning, editing, fixing, refactoring, documenting, rev
 
 # Load Project Context
 
-Load the right area's documentation before drafting plans, making edits, or claiming completion. Apply this to all project work, including small changes.
+Load only the active working context needed for the next task. Historical plans,
+decision records, run logs, and archives are reference material; search or read
+them only when the task asks for history or clearly revisits a previous choice.
 
 ## Workflow
 
 1. **Read `AREAS.md` at the project root.** It lists every area with its `Path:` and `Docs:` entries plus a short prose description.
 2. **Identify the touched area(s).** Match the user's prompt and any quoted file paths against the `Path:` entries in `AREAS.md`. If multiple areas are involved, load each one.
 3. **Read the area's `<docsRoot>/README.md` first.** It states the area's purpose and the doc reading order.
-4. **Then read the rest of the doc set as relevance dictates:**
-   - `product-spec.md` — when the work touches user-facing behavior or scope.
-   - `acceptance-criteria.md` — when the work claims to satisfy a criterion.
-   - `implementation-status.md` — always; this is the current state.
-   - `decisions.md` — when the work touches an area covered by an earlier decision.
-   - `specs/<date>-<feature>.md` — when the work is part of a named feature.
-   - `plans/<date>-<batch>.md` — when continuing or modifying an in-flight batch.
-5. **State which areas and docs you used.** Before drafting a plan or making edits, list them in your response so the human partner can confirm coverage.
-6. **Seed a final task-list/checklist item** using the host's task tool: "Run `maintain-project-docs` before claiming completion." Use `TodoWrite` in Claude Code, `update_plan` in Codex, or the local checklist mechanism in other agents.
+4. **Load the active docs only:**
+   - `implementation-status.md` — always; it should be a compact current snapshot.
+   - `spec.md`, `product-spec.md`, or the active `specs/<date>-<feature>.md` named by the README/status — when the work touches behavior, scope, schema, architecture, UX, or acceptance.
+   - `operations.md` or another runbook — only when the work involves running, deploying, importing, exporting, retrying, or troubleshooting the area.
+   - `acceptance-criteria.md` — only when the area keeps criteria separate from the spec and the task changes or verifies those criteria.
+   - `plans/<date>-<batch>.md` — only when continuing or modifying that in-flight batch.
+5. **Avoid history by default.**
+   - Do not read `decisions/`, `decisions.md`, `logs/`, `archive/`, or old plans during normal coding unless the README/status points to a specific current record or the task asks why something was chosen.
+   - If you suspect a previous decision matters, use targeted search first. Search only history paths that exist, e.g. build a short candidate list from `<docsRoot>/decisions`, `<docsRoot>/logs`, and `<docsRoot>/archive`, then run `rg -n "<topic>" ...` and read only the matching file.
+   - For onboarding, broad history review, or "did we already decide this?", use `review-project-history` instead of loading history into working context.
+6. **State which areas and docs you used.** Before drafting a plan or making edits, list them in your response so the human partner can confirm coverage.
+7. **Seed a final task-list/checklist item** using the host's task tool: "Run `maintain-project-docs` before claiming completion." Use `TodoWrite` in Claude Code, `update_plan` in Codex, or the local checklist mechanism in other agents.
 
 ## When to skip
 

@@ -1,7 +1,7 @@
 {
   "name": "spec-driven-development",
-  "version": "0.3.1",
-  "description": "Per-area documentation set (product spec, acceptance criteria, status, decisions, feature specs, plans) so humans and agents share the same project context.",
+  "version": "0.4.0",
+  "description": "Per-area active docs plus deliberate history review so humans and agents share useful project context without loading every archive.",
   "author": {
     "name": "VoytechG",
     "url": "https://github.com/VoytechG"
@@ -20,8 +20,8 @@
   "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Spec-Driven Development",
-    "shortDescription": "Per-area docs (spec, acceptance, status, decisions) shared by humans and agents.",
-    "longDescription": "Use spec-driven-development to keep every project area (main app, prototype, sub-module) carrying the same small documentation set. A coordinator skill gives Codex a broad project-work trigger, then routes agents to load the right area's context before edits and keep implementation status and decisions in sync before completion. Lifecycle hooks surface AREAS.md, seed project-work reminders, and guard completion when project files changed without docs.",
+    "shortDescription": "Compact per-area active docs with optional history review.",
+    "longDescription": "Use spec-driven-development to keep every project area (main app, prototype, sub-module) carrying compact active documentation for normal work, while decisions, logs, and archives are retrieved only when onboarding or researching history. A coordinator skill gives Codex a broad project-work trigger, routes agents to load the right active context before edits, and keeps docs in sync before completion. Lifecycle hooks surface AREAS.md, seed project-work reminders, and guard completion when project files changed without docs.",
     "developerName": "VoytechG",
     "category": "Coding",
     "capabilities": [

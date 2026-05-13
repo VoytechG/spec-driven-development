@@ -1,5 +1,16 @@
 # Release Notes
 
+## v0.4.0 (2026-05-13)
+
+Context discipline release.
+
+- Added `review-project-history` for onboarding, prior-decision research, logs, archives, and old-plan review.
+- Changed `load-project-context` to load compact active docs by default and search history only when needed.
+- Changed `maintain-project-docs` to keep active docs small, prefer atomic decision records, and treat separate acceptance criteria as optional.
+- Added `spec.md`, `operations.md`, and `decision-record.md` templates.
+- Updated templates so implementation status is a current snapshot rather than a verification diary.
+- Added an auditable no-doc-change escape hatch: `Docs unchanged by design: <reason>`.
+
 ## v0.3.1 (2026-05-03)
 
 Codex commit guard release.

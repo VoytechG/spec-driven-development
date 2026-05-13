@@ -1,14 +1,16 @@
 # Implementation Status — <Area Name>
 
-*Living state of the area. Updated every work batch.*
+*Compact current state. Do not use this as a diary; move old verification or run history to `logs/`.*
 
-## Delivered
+Last updated: YYYY-MM-DD
 
-*What is implemented and verified.*
+## Current state
 
-## In progress
+*What is implemented and usable now.*
 
-*What is currently being worked on, with a pointer to the active plan in `plans/`.*
+## Next checkpoint
+
+*The next concrete thing a contributor should do.*
 
 ## Active plan
 
@@ -22,6 +24,6 @@
 
 *Gaps the team is aware of but has not addressed.*
 
-## Verification
+## Latest verification
 
-*Dated verification history, newest first: what was checked, how, and the result (test command, manual steps, or "n/a — docs only").*
+*Newest check only, with a link to `logs/verification.md` if detailed history is useful.*

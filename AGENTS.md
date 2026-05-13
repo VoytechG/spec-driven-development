@@ -8,9 +8,9 @@ The plugin is generic. It must contain no references to specific projects, produ
 
 ## What the plugin ships
 
-- Three skills: `using-spec-driven-development`, `load-project-context`, and `maintain-project-docs`.
+- Four skills: `using-spec-driven-development`, `load-project-context`, `maintain-project-docs`, and `review-project-history`.
 - Three hooks: `SessionStart`, `UserPromptSubmit`, and `Stop`.
-- Eight markdown templates under `templates/`.
+- Markdown templates under `templates/`.
 - Three platform manifests: Claude Code, Codex, Gemini CLI.
 - One marketplace logo under `assets/`.
 
@@ -32,6 +32,9 @@ Every change should leave this list intact unless the change deliberately adds o
 ## Local checks
 
 - `bash -n hooks/session-start`, `bash -n hooks/user-prompt-submit`, and `bash -n hooks/stop` must pass.
+- Run `hooks/session-start` from a throwaway repo with `AREAS.md` and from a directory without `AREAS.md`; `bash -n` does not catch every runtime quoting issue.
+- Run `hooks/user-prompt-submit` once with a project-work prompt and once with a non-project prompt.
+- Run `hooks/stop` once in a throwaway repo with code-only changes and once after adding a docs change.
 - JSON manifests must parse.
 
 ## What does not belong here

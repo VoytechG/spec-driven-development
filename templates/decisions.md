@@ -1,13 +1,15 @@
-# Decisions — <Area Name>
+# Decision Index — <Area Name>
 
-*Chronological log of durable decisions. One entry per decision. To reverse a decision, add a new entry; do not edit the old one.*
+*Optional short index for durable decisions. Keep full rationale in separate `decisions/YYYY-MM-DD-short-title.md` records so normal edits do not require reading history.*
 
-## YYYY-MM-DD: <short title>
+## Active decisions
 
-*One-line decision statement.*
+| Topic | Decision | Record |
+| --- | --- | --- |
+| *Topic* | *One-line decision* | `decisions/YYYY-MM-DD-short-title.md` |
 
-Reason:
-- *Why this option, not the alternatives.*
+## Deferred or rejected approaches
 
-Implications:
-- *What downstream contracts or code shapes this commits the area to.*
+| Topic | Not doing | Record |
+| --- | --- | --- |
+| *Topic* | *Rejected or deferred approach* | `decisions/YYYY-MM-DD-short-title.md` |

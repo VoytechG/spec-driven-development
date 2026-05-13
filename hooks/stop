@@ -19,6 +19,14 @@ if [ "${SPEC_DRIVEN_DISABLE_STOP_HOOK:-}" = "1" ]; then
     exit 0
 fi
 
+if [ "${SPEC_DRIVEN_DOCS_UNCHANGED_OK:-}" = "1" ]; then
+    exit 0
+fi
+
+if printf '%s' "$hook_input" | grep -Eiq 'Docs unchanged by design:'; then
+    exit 0
+fi
+
 if [ ! -f AREAS.md ]; then
     exit 0
 fi
@@ -77,7 +85,7 @@ if [ "$has_project_change" -eq 0 ] || [ "$has_doc_change" -eq 1 ]; then
     exit 0
 fi
 
-message="spec-driven-development: changed project files are present in the ${change_source}, but no documentation files changed. Before finishing, use maintain-project-docs for the touched AREAS.md areas, update implementation-status.md or decisions.md when needed, or explain why docs do not change."
+message="spec-driven-development: changed project files are present in the ${change_source}, but no documentation files changed. Before finishing, use maintain-project-docs for the touched AREAS.md areas, update active docs or add a decision record when needed. For pure refactors or equivalent no-doc changes, include 'Docs unchanged by design: <reason>' in the final response."
 
 escape_for_json() {
     local s="$1"
